@@ -11,20 +11,6 @@ typedef struct Vertex {
 	void* other_props;       /* other properties */
 } Vertex;
 
-char* elem_names[] = { /* list of the kinds of elements in the user's object */
-  "vertex"
-};
-
-PlyProperty vert_props[] = { /* list of property information for a vertex */
-  {"x", Float32, Float32, offsetof(Vertex,x), 0, 0, 0, 0},
-  {"y", Float32, Float32, offsetof(Vertex,y), 0, 0, 0, 0},
-  {"z", Float32, Float32, offsetof(Vertex,z), 0, 0, 0, 0},
-  {"nx", Float32, Float32, offsetof(Vertex,nx), 0, 0, 0, 0},
-  {"ny", Float32, Float32, offsetof(Vertex,ny), 0, 0, 0, 0},
-  {"nz", Float32, Float32, offsetof(Vertex,nz), 0, 0, 0, 0},
-};
-
-
 /*** the PLY object ***/
 
 static PlyFile* in_ply;
