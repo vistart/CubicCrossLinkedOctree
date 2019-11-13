@@ -3,7 +3,7 @@ project(CubicCrossLinkedOctree)
 
 include_directories("file_format/ply")
 
-set(SOURCES main.cpp "file_format/ply/ply.h" "file_format/ply/ply.c" "file_format/ply/vertex.h" "file_format/ply/vertex.cpp")
+set(SOURCES main.cpp vertexes.h vertexes.cpp "file_format/ply/ply.h" "file_format/ply/ply.c" "file_format/ply/vertex.h" "file_format/ply/vertex.cpp")
 
 set(CMAKE_CXX_STANDARD 17)
 

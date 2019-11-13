@@ -24,6 +24,6 @@ static int has_ny = 0;
 static int has_nz = 0;
 
 void negate_normals();
-void read_file(FILE*);
+Vertex** read_file(FILE*);
 
 #endif /* !__PLY_H__ */

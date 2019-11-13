@@ -1,6 +1,8 @@
 #include "ply.h"
 #include <cstdlib>
 #include "vertex.h"
+#include <iostream>
+#include <iomanip>
 
 char* elem_names[] = { /* list of the kinds of elements in the user's object */
   "vertex"
@@ -35,7 +37,7 @@ void negate_normals()
 Read in the PLY file from standard in.
 ******************************************************************************/
 
-void read_file(FILE* in_ply_path)
+Vertex** read_file(FILE* in_ply_path)
 {
 	int i, j;
 	int elem_count;
@@ -97,10 +99,5 @@ void read_file(FILE* in_ply_path)
 			}
 		}
 	}
-
-	/* close the file */
-	/* (we won't free up the memory for in_ply because we will use it */
-	/*  to help describe the file that we will write out) */
-
-	close_ply(in_ply);
+	return vlist;
 }
