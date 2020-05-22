@@ -14,25 +14,25 @@
 #ifdef __PLY_COMMENT_LIST_H__
 bool PlyCommentList::add(string comment)
 {
-	this->comments.push_back(comment);
-	return true;
+    this->comments.emplace_back(comment);
+    return true;
 }
 
 vector<string> PlyCommentList::getComments()
 {
-	return this->comments;
+    return this->comments;
 }
 
 PlyCommentList& PlyCommentList::operator<<(string comment)
 {
-	if (this->add(comment)) {
-		
-	}
-	return *this;
+    if (this->add(comment)) {
+
+    }
+    return *this;
 }
 
 PlyCommentList::~PlyCommentList()
 {
-	this->comments.erase(this->comments.begin(), this->comments.end());
+    this->comments.erase(this->comments.begin(), this->comments.end());
 }
 #endif
