@@ -2,7 +2,9 @@ cmake_minimum_required(VERSION 3.10)
 project(CubicCrossLinkedOctree)
 aux_source_directory(. DIR_SRCS)
 include_directories("${PROJECT_SOURCE_DIR}/file_format/ply")
+include_directories("${PROJECT_SOURCE_DIR}/file_format/PointCloudBasePresentation")
 add_subdirectory(file_format/ply)
+add_subdirectory(file_format/PointCloudBasePresentation)
 
 set(SOURCES main.cpp)
 
