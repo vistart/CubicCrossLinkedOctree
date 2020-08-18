@@ -14,7 +14,6 @@
 #ifdef __PLY_FILE_H__
 #include <iostream>
 #include <iomanip>
-#include <sstream>
 #include <algorithm>
 
 using namespace std;
@@ -25,7 +24,7 @@ using namespace std;
  * Parameters:
  *     std::string file_path: the file path to store the ply data.
  */
-PlyFile::PlyFile(string file_path)
+PlyFile::PlyFile(string const& file_path)
 {
     this->filename = file_path;
     this->FileEncoding = make_shared<PlyFileEncoding>();
@@ -51,14 +50,14 @@ PlyFile::~PlyFile()
     this->filename = "";
 }
 
-bool PlyFile::GetIsValid()
+bool PlyFile::GetIsValid() const
 {
     return this->valid;
 }
 #pragma endregion
 
 #pragma region File Format
-string PlyFile::GetFileFormat()
+string PlyFile::GetFileFormat() const
 {
     if (this->file_format == FILE_FORMAT_PLY)
     {
@@ -67,7 +66,7 @@ string PlyFile::GetFileFormat()
     return "unknown type!";
 }
 
-bool PlyFile::set_file_format(string file_format)
+bool PlyFile::set_file_format(string const& file_format)
 {
     if (file_format == "ply") {
         this->file_format = FILE_FORMAT_PLY;
@@ -78,7 +77,7 @@ bool PlyFile::set_file_format(string file_format)
 #pragma endregion
 
 #pragma region File Encoding
-bool PlyFile::read_file_encoding(string tag, fstream& file)
+bool PlyFile::read_file_encoding(string const& tag, fstream& file)
 {
     if (tag != string("format"))
         return false;
@@ -90,7 +89,7 @@ bool PlyFile::read_file_encoding(string tag, fstream& file)
 
 #pragma region Comment
 
-bool PlyFile::read_comment(string tag, fstream& file)
+bool PlyFile::read_comment(string const& tag, fstream& file) const
 {
     if (tag != string(PLY_TAG_COMMENT))
         return false;
@@ -102,7 +101,7 @@ bool PlyFile::read_comment(string tag, fstream& file)
 }
 #pragma endregion
 
-bool PlyFile::open(string file_path)
+bool PlyFile::open(string const& file_path)
 {
     if (this->file.is_open()) {
         this->file.close();
@@ -113,22 +112,24 @@ bool PlyFile::open(string file_path)
 }
 
 #pragma region Vertex
-bool PlyFile::read_element_vertex_names(fstream& file)
+bool PlyFile::read_element_vertex_names(fstream& file) const
 {
     this->point_list->read_element_vertex_names(file);
     PlyVertex::VertexName const back = this->point_list->names.back();
+#ifdef _DEBUG
     cout << "Property: " << back.name << " | " << back.type << endl;
+#endif
     return true;
 }
 
-bool PlyFile::read_element_vertex_encoding(PlyFileEncoding const& file_encoding)
+bool PlyFile::read_element_vertex_encoding(PlyFileEncoding const& file_encoding) const
 {
     auto& vertex_list = *this->point_list;
     vertex_list << file_encoding;
     return true;
 }
 
-bool PlyFile::read_element_vertex(fstream& file)
+bool PlyFile::read_element_vertex(fstream& file) const
 {
     auto& vertex_list = *this->point_list;
     vertex_list << file;
@@ -142,29 +143,45 @@ shared_ptr<PlyVertexList> PlyFile::GetPointList()
 #pragma endregion
 
 #pragma region Face
-bool PlyFile::read_element_face_names(fstream& file)
+bool PlyFile::read_element_face_names(fstream& file) const
 {
     string face;
     getline(file, face);
+#ifdef _DEBUG
     cout << "Element: " << face << endl;
+#endif
     return true;
+}
+bool PlyFile::read_element_face(fstream& file)
+{
+    return false;
 }
 #pragma endregion
 
 #pragma region Edge
-bool PlyFile::read_element_edge_names(fstream& file)
+bool PlyFile::read_element_edge_names(fstream& file) const
 {
     string edge;
     getline(file, edge);
+#ifdef _DEBUG
     cout << "Element: " << edge << endl;
+#endif
     return true;
+}
+bool PlyFile::read_element_edge(fstream& file)
+{
+    return false;
 }
 #pragma endregion
 
 #pragma region User-Defined Elements
-bool PlyFile::read_element_user_defined_names(fstream& file)
+bool PlyFile::read_element_user_defined_names(fstream& file) const
 {
     return true;
+}
+bool PlyFile::read_element_user_defined(fstream& file)
+{
+    return false;
 }
 #pragma endregion
 
@@ -174,11 +191,19 @@ bool PlyFile::read_header(fstream& file)
     string buffer;
     enum ELEMENTS { NONE, VERTEX, FACE, EDGE, USER_DEFINED };
     int current_elements = NONE;
+
+    // Regardless of the status of the current file, it searches from the beginning.
     file.seekg(0, ios::beg);
+
+    // Reading the header of a ply file.
     while (file >> buffer)
     {
+        // Regardless of the case of the current word, it is converted to lower case for comparison.
         transform(buffer.begin(), buffer.end(), buffer.begin(), ::tolower);
+
+        // If `buffer` equals to "property", the content after it is regarded as the property name.
         if (buffer.c_str() == string("property")) {
+            // There are three default property names: vertex, face and edge.
             if (current_elements == VERTEX) {
                 read_element_vertex_names(file);
                 continue;
@@ -191,6 +216,7 @@ bool PlyFile::read_header(fstream& file)
                 read_element_edge_names(file);
                 continue;
             }
+            // All others are user-defined.
             if (current_elements == USER_DEFINED) {
                 read_element_user_defined_names(file);
                 continue;
@@ -199,25 +225,35 @@ bool PlyFile::read_header(fstream& file)
 
         current_elements = NONE;
 
+        // If `buffer` equals to "ply", it indicates that the current file format is ply.
         if (buffer.c_str() == string("ply")) {
             cout << "PLY" << endl;
             this->set_file_format("ply");
             continue;
         }
 
+
+        // If `buffer` equals to "format", it indicates that the following content is format and encoding.
         if (read_file_encoding(buffer.c_str(), file)) {
+#ifdef _DEBUG
             cout << "FORMAT: " << (*this->FileEncoding).Encoding() << " VERSION:" << (*this->FileEncoding).Version() << endl;
+#endif
             continue;
         }
 
+        // If `buffer` equals to "comment", it indicates that the following content is comment.
         if (read_comment(buffer.c_str(), file)) {
-            for (auto comment : (*this->CommentList).getComments())
-            {
-                cout << "Comment: " << comment << endl;
-            }
+#ifdef _DEBUG
+            auto comments = *CommentList->getComments();
+			for (const auto& comment :comments)
+			{
+				cout << "Comment: " << comment << endl;
+			}
+#endif
             continue;
         }
 
+        // If `buffer` equals to "element", it indicates that the following content is element names.
         if (buffer.c_str() == string("element")) {
             string element_name;
             file >> element_name >> element_count;
@@ -226,7 +262,9 @@ bool PlyFile::read_header(fstream& file)
                 current_elements = VERTEX;
                 auto point_list = this->GetPointList();
                 point_list->SetCountInHeader(element_count);
+#ifdef _DEBUG
                 cout << "Element: " << element_name << point_list->GetCountInHeader() << endl;
+#endif
                 continue;
             }
 
@@ -243,7 +281,9 @@ bool PlyFile::read_header(fstream& file)
         }
 
         if (buffer.c_str() == string("end_header")) {
+#ifdef _DEBUG
             cout << "END of HEADER" << endl;
+#endif
             break;
         }
     }
@@ -257,7 +297,9 @@ bool PlyFile::read_body(fstream& file)
     unsigned int const vertex_count_in_header = this->GetPointList()->GetCountInHeader();
     for (unsigned int i = 0; i < vertex_count_in_header; i++)
     {
+#ifdef _DEBUG
         // cout << "file pointer: " << file.tellg() << endl;
+#endif
         read_element_vertex(file);
     }
     return true;

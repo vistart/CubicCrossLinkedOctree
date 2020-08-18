@@ -12,15 +12,27 @@
 #endif
 
 #ifdef __PLY_VERTEX_H__
-
-#define read_be PlyPropertyType::read_binary_be_property
-#define read_le PlyPropertyType::read_binary_le_property
+using namespace std;
+#define READ_BE PlyPropertyType::read_binary_be_property
+#define READ_LE PlyPropertyType::read_binary_le_property
 
 PlyVertex::PlyVertex(vector<VertexName> const& names, string const& vertex)
 {
     double X = 0, Y = 0, Z = 0;
+    /*
+     * If you treat `char` as a number, you cannot directly stream the content of
+     * a character or string to a `char` type variable. Instead, you need to output
+     * it to an integer or unsigned integer variable first, and then perform bit
+     * operations, otherwise it will be treated as a character.
+     * For example:
+     * If you would like to receive the number `7` and put it into a `char` variable,
+     * you'll find that the value of variable is `55`, the ASCII code of character `7`,
+     * not number `7`.
+     */
+    unsigned int __R = 0, __G = 0, __B = 0;
     unsigned char R = 0, G = 0, B = 0;
     double NX = 0, NY = 0, NZ = 0, CONFIDENCE = 1, INTENSITY = 0.5;
+    unsigned int __ALPHA = 255;
     unsigned char ALPHA = 255;
     stringstream stream(vertex);
     for (auto& name : names)
@@ -36,13 +48,16 @@ PlyVertex::PlyVertex(vector<VertexName> const& names, string const& vertex)
                 stream >> Z;
                 break;
             case PROPERTY_R:
-                stream >> R;
+                stream >> __R;
+                R = __R & 0xFF;
                 break;
             case PROPERTY_G:
-                stream >> G;
+                stream >> __G;
+                G = __G & 0xFF;
                 break;
             case PROPERTY_B:
-                stream >> B;
+                stream >> __B;
+                B = __B & 0xFF;
                 break;
             case PROPERTY_NX:
                 stream >> NX;
@@ -54,7 +69,8 @@ PlyVertex::PlyVertex(vector<VertexName> const& names, string const& vertex)
                 stream >> NZ;
                 break;
             case PROPERTY_ALPHA:
-                stream >> ALPHA;
+                stream >> __ALPHA;
+                ALPHA = __ALPHA & 0xFF;
                 break;
             case PROPERTY_CONFIDENCE:
                 stream >> CONFIDENCE;
@@ -129,110 +145,110 @@ PlyVertex::PlyVertex(vector<VertexName> const& names, fstream& file, PlyFileEnco
                 switch (name.name) {
                     case PROPERTY_X:
                         switch (name.type) {
-                            case PlyPropertyType::INT8: X = read_be<char>(file); break;
-                            case PlyPropertyType::UINT8: X = read_be<unsigned char>(file); break;
-                            case PlyPropertyType::INT16: X = read_be<short>(file); break;
-                            case PlyPropertyType::UINT16: X = read_be<unsigned short>(file); break;
-                            case PlyPropertyType::INT32: X = read_be<int>(file); break;
-                            case PlyPropertyType::UINT32: X = read_be<unsigned int>(file); break;
-                            case PlyPropertyType::FLOAT32: X = read_be<float>(file); break;
-                            case PlyPropertyType::FLOAT64: X = read_be<double>(file); break;
+                            case PlyPropertyType::INT8: X = READ_BE<char>(file); break;
+                            case PlyPropertyType::UINT8: X = READ_BE<unsigned char>(file); break;
+                            case PlyPropertyType::INT16: X = READ_BE<short>(file); break;
+                            case PlyPropertyType::UINT16: X = READ_BE<unsigned short>(file); break;
+                            case PlyPropertyType::INT32: X = READ_BE<int>(file); break;
+                            case PlyPropertyType::UINT32: X = READ_BE<unsigned int>(file); break;
+                            case PlyPropertyType::FLOAT32: X = READ_BE<float>(file); break;
+                            case PlyPropertyType::FLOAT64: X = READ_BE<double>(file); break;
                         }
                         break;
                     case PROPERTY_Y:
                         switch (name.type) {
-                            case PlyPropertyType::INT8: Y = read_be<char>(file); break;
-                            case PlyPropertyType::UINT8: Y = read_be<unsigned char>(file); break;
-                            case PlyPropertyType::INT16: Y = read_be<short>(file); break;
-                            case PlyPropertyType::UINT16: Y = read_be<unsigned short>(file); break;
-                            case PlyPropertyType::INT32: Y = read_be<int>(file); break;
-                            case PlyPropertyType::UINT32: Y = read_be<unsigned int>(file); break;
-                            case PlyPropertyType::FLOAT32: Y = read_be<float>(file); break;
-                            case PlyPropertyType::FLOAT64: Y = read_be<double>(file); break;
+                            case PlyPropertyType::INT8: Y = READ_BE<char>(file); break;
+                            case PlyPropertyType::UINT8: Y = READ_BE<unsigned char>(file); break;
+                            case PlyPropertyType::INT16: Y = READ_BE<short>(file); break;
+                            case PlyPropertyType::UINT16: Y = READ_BE<unsigned short>(file); break;
+                            case PlyPropertyType::INT32: Y = READ_BE<int>(file); break;
+                            case PlyPropertyType::UINT32: Y = READ_BE<unsigned int>(file); break;
+                            case PlyPropertyType::FLOAT32: Y = READ_BE<float>(file); break;
+                            case PlyPropertyType::FLOAT64: Y = READ_BE<double>(file); break;
                         }
                         break;
                     case PROPERTY_Z:
                         switch (name.type) {
-                            case PlyPropertyType::INT8: Z = read_be<char>(file); break;
-                            case PlyPropertyType::UINT8: Z = read_be<unsigned char>(file); break;
-                            case PlyPropertyType::INT16: Z = read_be<short>(file); break;
-                            case PlyPropertyType::UINT16: Z = read_be<unsigned short>(file); break;
-                            case PlyPropertyType::INT32: Z = read_be<int>(file); break;
-                            case PlyPropertyType::UINT32: Z = read_be<unsigned int>(file); break;
-                            case PlyPropertyType::FLOAT32: Z = read_be<float>(file); break;
-                            case PlyPropertyType::FLOAT64: Z = read_be<double>(file); break;
+                            case PlyPropertyType::INT8: Z = READ_BE<char>(file); break;
+                            case PlyPropertyType::UINT8: Z = READ_BE<unsigned char>(file); break;
+                            case PlyPropertyType::INT16: Z = READ_BE<short>(file); break;
+                            case PlyPropertyType::UINT16: Z = READ_BE<unsigned short>(file); break;
+                            case PlyPropertyType::INT32: Z = READ_BE<int>(file); break;
+                            case PlyPropertyType::UINT32: Z = READ_BE<unsigned int>(file); break;
+                            case PlyPropertyType::FLOAT32: Z = READ_BE<float>(file); break;
+                            case PlyPropertyType::FLOAT64: Z = READ_BE<double>(file); break;
                         }
                         break;
                     case PROPERTY_R:
-                        R = read_be<unsigned char>(file);
+                        R = READ_BE<unsigned char>(file);
                         break;
                     case PROPERTY_G:
-                        G = read_be<unsigned char>(file);
+                        G = READ_BE<unsigned char>(file);
                         break;
                     case PROPERTY_B:
-                        B = read_be<unsigned char>(file);
+                        B = READ_BE<unsigned char>(file);
                         break;
                     case PROPERTY_NX:
                         switch (name.type) {
-                            case PlyPropertyType::INT8: NX = read_be<char>(file); break;
-                            case PlyPropertyType::UINT8: NX = read_be<unsigned char>(file); break;
-                            case PlyPropertyType::INT16: NX = read_be<short>(file); break;
-                            case PlyPropertyType::UINT16: NX = read_be<unsigned short>(file); break;
-                            case PlyPropertyType::INT32: NX = read_be<int>(file); break;
-                            case PlyPropertyType::UINT32: NX = read_be<unsigned int>(file); break;
-                            case PlyPropertyType::FLOAT32: NX = read_be<float>(file); break;
-                            case PlyPropertyType::FLOAT64: NX = read_be<double>(file); break;
+                            case PlyPropertyType::INT8: NX = READ_BE<char>(file); break;
+                            case PlyPropertyType::UINT8: NX = READ_BE<unsigned char>(file); break;
+                            case PlyPropertyType::INT16: NX = READ_BE<short>(file); break;
+                            case PlyPropertyType::UINT16: NX = READ_BE<unsigned short>(file); break;
+                            case PlyPropertyType::INT32: NX = READ_BE<int>(file); break;
+                            case PlyPropertyType::UINT32: NX = READ_BE<unsigned int>(file); break;
+                            case PlyPropertyType::FLOAT32: NX = READ_BE<float>(file); break;
+                            case PlyPropertyType::FLOAT64: NX = READ_BE<double>(file); break;
                         }
                         break;
                     case PROPERTY_NY:
                         switch (name.type) {
-                            case PlyPropertyType::INT8: NY = read_be<char>(file); break;
-                            case PlyPropertyType::UINT8: NY = read_be<unsigned char>(file); break;
-                            case PlyPropertyType::INT16: NY = read_be<short>(file); break;
-                            case PlyPropertyType::UINT16: NY = read_be<unsigned short>(file); break;
-                            case PlyPropertyType::INT32: NY = read_be<int>(file); break;
-                            case PlyPropertyType::UINT32: NY = read_be<unsigned int>(file); break;
-                            case PlyPropertyType::FLOAT32: NY = read_be<float>(file); break;
-                            case PlyPropertyType::FLOAT64: NY = read_be<double>(file); break;
+                            case PlyPropertyType::INT8: NY = READ_BE<char>(file); break;
+                            case PlyPropertyType::UINT8: NY = READ_BE<unsigned char>(file); break;
+                            case PlyPropertyType::INT16: NY = READ_BE<short>(file); break;
+                            case PlyPropertyType::UINT16: NY = READ_BE<unsigned short>(file); break;
+                            case PlyPropertyType::INT32: NY = READ_BE<int>(file); break;
+                            case PlyPropertyType::UINT32: NY = READ_BE<unsigned int>(file); break;
+                            case PlyPropertyType::FLOAT32: NY = READ_BE<float>(file); break;
+                            case PlyPropertyType::FLOAT64: NY = READ_BE<double>(file); break;
                         }
                         break;
                     case PROPERTY_NZ:
                         switch (name.type) {
-                            case PlyPropertyType::INT8: NZ = read_be<char>(file); break;
-                            case PlyPropertyType::UINT8: NZ = read_be<unsigned char>(file); break;
-                            case PlyPropertyType::INT16: NZ = read_be<short>(file); break;
-                            case PlyPropertyType::UINT16: NZ = read_be<unsigned short>(file); break;
-                            case PlyPropertyType::INT32: NZ = read_be<int>(file); break;
-                            case PlyPropertyType::UINT32: NZ = read_be<unsigned int>(file); break;
-                            case PlyPropertyType::FLOAT32: NZ = read_be<float>(file); break;
-                            case PlyPropertyType::FLOAT64: NZ = read_be<double>(file); break;
+                            case PlyPropertyType::INT8: NZ = READ_BE<char>(file); break;
+                            case PlyPropertyType::UINT8: NZ = READ_BE<unsigned char>(file); break;
+                            case PlyPropertyType::INT16: NZ = READ_BE<short>(file); break;
+                            case PlyPropertyType::UINT16: NZ = READ_BE<unsigned short>(file); break;
+                            case PlyPropertyType::INT32: NZ = READ_BE<int>(file); break;
+                            case PlyPropertyType::UINT32: NZ = READ_BE<unsigned int>(file); break;
+                            case PlyPropertyType::FLOAT32: NZ = READ_BE<float>(file); break;
+                            case PlyPropertyType::FLOAT64: NZ = READ_BE<double>(file); break;
                         }
                         break;
                     case PROPERTY_ALPHA:
-                        ALPHA = read_be<unsigned char>(file);
+                        ALPHA = READ_BE<unsigned char>(file);
                         break;
                     case PROPERTY_CONFIDENCE:
                         switch (name.type) {
-                            case PlyPropertyType::INT8: CONFIDENCE = read_be<char>(file); break;
-                            case PlyPropertyType::UINT8: CONFIDENCE = read_be<unsigned char>(file); break;
-                            case PlyPropertyType::INT16: CONFIDENCE = read_be<short>(file); break;
-                            case PlyPropertyType::UINT16: CONFIDENCE = read_be<unsigned short>(file); break;
-                            case PlyPropertyType::INT32: CONFIDENCE = read_be<int>(file); break;
-                            case PlyPropertyType::UINT32: CONFIDENCE = read_be<unsigned int>(file); break;
-                            case PlyPropertyType::FLOAT32: CONFIDENCE = read_be<float>(file); break;
-                            case PlyPropertyType::FLOAT64: CONFIDENCE = read_be<double>(file); break;
+                            case PlyPropertyType::INT8: CONFIDENCE = READ_BE<char>(file); break;
+                            case PlyPropertyType::UINT8: CONFIDENCE = READ_BE<unsigned char>(file); break;
+                            case PlyPropertyType::INT16: CONFIDENCE = READ_BE<short>(file); break;
+                            case PlyPropertyType::UINT16: CONFIDENCE = READ_BE<unsigned short>(file); break;
+                            case PlyPropertyType::INT32: CONFIDENCE = READ_BE<int>(file); break;
+                            case PlyPropertyType::UINT32: CONFIDENCE = READ_BE<unsigned int>(file); break;
+                            case PlyPropertyType::FLOAT32: CONFIDENCE = READ_BE<float>(file); break;
+                            case PlyPropertyType::FLOAT64: CONFIDENCE = READ_BE<double>(file); break;
                         }
                         break;
                     case PROPERTY_INTENSITY:
                         switch (name.type) {
-                            case PlyPropertyType::INT8: INTENSITY = read_be<char>(file); break;
-                            case PlyPropertyType::UINT8: INTENSITY = read_be<unsigned char>(file); break;
-                            case PlyPropertyType::INT16: INTENSITY = read_be<short>(file); break;
-                            case PlyPropertyType::UINT16: INTENSITY = read_be<unsigned short>(file); break;
-                            case PlyPropertyType::INT32: INTENSITY = read_be<int>(file); break;
-                            case PlyPropertyType::UINT32: INTENSITY = read_be<unsigned int>(file); break;
-                            case PlyPropertyType::FLOAT32: INTENSITY = read_be<float>(file); break;
-                            case PlyPropertyType::FLOAT64: INTENSITY = read_be<double>(file); break;
+                            case PlyPropertyType::INT8: INTENSITY = READ_BE<char>(file); break;
+                            case PlyPropertyType::UINT8: INTENSITY = READ_BE<unsigned char>(file); break;
+                            case PlyPropertyType::INT16: INTENSITY = READ_BE<short>(file); break;
+                            case PlyPropertyType::UINT16: INTENSITY = READ_BE<unsigned short>(file); break;
+                            case PlyPropertyType::INT32: INTENSITY = READ_BE<int>(file); break;
+                            case PlyPropertyType::UINT32: INTENSITY = READ_BE<unsigned int>(file); break;
+                            case PlyPropertyType::FLOAT32: INTENSITY = READ_BE<float>(file); break;
+                            case PlyPropertyType::FLOAT64: INTENSITY = READ_BE<double>(file); break;
                         }
                         break;
                     default:
@@ -247,110 +263,110 @@ PlyVertex::PlyVertex(vector<VertexName> const& names, fstream& file, PlyFileEnco
                 switch (name.name) {
                     case PROPERTY_X:
                         switch (name.type) {
-                            case PlyPropertyType::INT8: X = read_le<char>(file); break;
-                            case PlyPropertyType::UINT8: X = read_le<unsigned char>(file); break;
-                            case PlyPropertyType::INT16: X = read_le<short>(file); break;
-                            case PlyPropertyType::UINT16: X = read_le<unsigned short>(file); break;
-                            case PlyPropertyType::INT32: X = read_le<int>(file); break;
-                            case PlyPropertyType::UINT32: X = read_le<unsigned int>(file); break;
-                            case PlyPropertyType::FLOAT32: X = read_le<float>(file); break;
-                            case PlyPropertyType::FLOAT64: X = read_le<double>(file); break;
+                            case PlyPropertyType::INT8: X = READ_LE<char>(file); break;
+                            case PlyPropertyType::UINT8: X = READ_LE<unsigned char>(file); break;
+                            case PlyPropertyType::INT16: X = READ_LE<short>(file); break;
+                            case PlyPropertyType::UINT16: X = READ_LE<unsigned short>(file); break;
+                            case PlyPropertyType::INT32: X = READ_LE<int>(file); break;
+                            case PlyPropertyType::UINT32: X = READ_LE<unsigned int>(file); break;
+                            case PlyPropertyType::FLOAT32: X = READ_LE<float>(file); break;
+                            case PlyPropertyType::FLOAT64: X = READ_LE<double>(file); break;
                         }
                         break;
                     case PROPERTY_Y:
                         switch (name.type) {
-                            case PlyPropertyType::INT8: Y = read_le<char>(file); break;
-                            case PlyPropertyType::UINT8: Y = read_le<unsigned char>(file); break;
-                            case PlyPropertyType::INT16: Y = read_le<short>(file); break;
-                            case PlyPropertyType::UINT16: Y = read_le<unsigned short>(file); break;
-                            case PlyPropertyType::INT32: Y = read_le<int>(file); break;
-                            case PlyPropertyType::UINT32: Y = read_le<unsigned int>(file); break;
-                            case PlyPropertyType::FLOAT32: Y = read_le<float>(file); break;
-                            case PlyPropertyType::FLOAT64: Y = read_le<double>(file); break;
+                            case PlyPropertyType::INT8: Y = READ_LE<char>(file); break;
+                            case PlyPropertyType::UINT8: Y = READ_LE<unsigned char>(file); break;
+                            case PlyPropertyType::INT16: Y = READ_LE<short>(file); break;
+                            case PlyPropertyType::UINT16: Y = READ_LE<unsigned short>(file); break;
+                            case PlyPropertyType::INT32: Y = READ_LE<int>(file); break;
+                            case PlyPropertyType::UINT32: Y = READ_LE<unsigned int>(file); break;
+                            case PlyPropertyType::FLOAT32: Y = READ_LE<float>(file); break;
+                            case PlyPropertyType::FLOAT64: Y = READ_LE<double>(file); break;
                         }
                         break;
                     case PROPERTY_Z:
                         switch (name.type) {
-                            case PlyPropertyType::INT8: Z = read_le<char>(file); break;
-                            case PlyPropertyType::UINT8: Z = read_le<unsigned char>(file); break;
-                            case PlyPropertyType::INT16: Z = read_le<short>(file); break;
-                            case PlyPropertyType::UINT16: Z = read_le<unsigned short>(file); break;
-                            case PlyPropertyType::INT32: Z = read_le<int>(file); break;
-                            case PlyPropertyType::UINT32: Z = read_le<unsigned int>(file); break;
-                            case PlyPropertyType::FLOAT32: Z = read_le<float>(file); break;
-                            case PlyPropertyType::FLOAT64: Z = read_le<double>(file); break;
+                            case PlyPropertyType::INT8: Z = READ_LE<char>(file); break;
+                            case PlyPropertyType::UINT8: Z = READ_LE<unsigned char>(file); break;
+                            case PlyPropertyType::INT16: Z = READ_LE<short>(file); break;
+                            case PlyPropertyType::UINT16: Z = READ_LE<unsigned short>(file); break;
+                            case PlyPropertyType::INT32: Z = READ_LE<int>(file); break;
+                            case PlyPropertyType::UINT32: Z = READ_LE<unsigned int>(file); break;
+                            case PlyPropertyType::FLOAT32: Z = READ_LE<float>(file); break;
+                            case PlyPropertyType::FLOAT64: Z = READ_LE<double>(file); break;
                         }
                         break;
                     case PROPERTY_R:
-                        R = read_le<unsigned char>(file);
+                        R = READ_LE<unsigned char>(file);
                         break;
                     case PROPERTY_G:
-                        G = read_le<unsigned char>(file);
+                        G = READ_LE<unsigned char>(file);
                         break;
                     case PROPERTY_B:
-                        B = read_le<unsigned char>(file);
+                        B = READ_LE<unsigned char>(file);
                         break;
                     case PROPERTY_NX:
                         switch (name.type) {
-                            case PlyPropertyType::INT8: NX = read_le<char>(file); break;
-                            case PlyPropertyType::UINT8: NX = read_le<unsigned char>(file); break;
-                            case PlyPropertyType::INT16: NX = read_le<short>(file); break;
-                            case PlyPropertyType::UINT16: NX = read_le<unsigned short>(file); break;
-                            case PlyPropertyType::INT32: NX = read_le<int>(file); break;
-                            case PlyPropertyType::UINT32: NX = read_le<unsigned int>(file); break;
-                            case PlyPropertyType::FLOAT32: NX = read_le<float>(file); break;
-                            case PlyPropertyType::FLOAT64: NX = read_le<double>(file); break;
+                            case PlyPropertyType::INT8: NX = READ_LE<char>(file); break;
+                            case PlyPropertyType::UINT8: NX = READ_LE<unsigned char>(file); break;
+                            case PlyPropertyType::INT16: NX = READ_LE<short>(file); break;
+                            case PlyPropertyType::UINT16: NX = READ_LE<unsigned short>(file); break;
+                            case PlyPropertyType::INT32: NX = READ_LE<int>(file); break;
+                            case PlyPropertyType::UINT32: NX = READ_LE<unsigned int>(file); break;
+                            case PlyPropertyType::FLOAT32: NX = READ_LE<float>(file); break;
+                            case PlyPropertyType::FLOAT64: NX = READ_LE<double>(file); break;
                         }
                         break;
                     case PROPERTY_NY:
                         switch (name.type) {
-                            case PlyPropertyType::INT8: NY = read_le<char>(file); break;
-                            case PlyPropertyType::UINT8: NY = read_le<unsigned char>(file); break;
-                            case PlyPropertyType::INT16: NY = read_le<short>(file); break;
-                            case PlyPropertyType::UINT16: NY = read_le<unsigned short>(file); break;
-                            case PlyPropertyType::INT32: NY = read_le<int>(file); break;
-                            case PlyPropertyType::UINT32: NY = read_le<unsigned int>(file); break;
-                            case PlyPropertyType::FLOAT32: NY = read_le<float>(file); break;
-                            case PlyPropertyType::FLOAT64: NY = read_le<double>(file); break;
+                            case PlyPropertyType::INT8: NY = READ_LE<char>(file); break;
+                            case PlyPropertyType::UINT8: NY = READ_LE<unsigned char>(file); break;
+                            case PlyPropertyType::INT16: NY = READ_LE<short>(file); break;
+                            case PlyPropertyType::UINT16: NY = READ_LE<unsigned short>(file); break;
+                            case PlyPropertyType::INT32: NY = READ_LE<int>(file); break;
+                            case PlyPropertyType::UINT32: NY = READ_LE<unsigned int>(file); break;
+                            case PlyPropertyType::FLOAT32: NY = READ_LE<float>(file); break;
+                            case PlyPropertyType::FLOAT64: NY = READ_LE<double>(file); break;
                         }
                         break;
                     case PROPERTY_NZ:
                         switch (name.type) {
-                            case PlyPropertyType::INT8: NZ = read_le<char>(file); break;
-                            case PlyPropertyType::UINT8: NZ = read_le<unsigned char>(file); break;
-                            case PlyPropertyType::INT16: NZ = read_le<short>(file); break;
-                            case PlyPropertyType::UINT16: NZ = read_le<unsigned short>(file); break;
-                            case PlyPropertyType::INT32: NZ = read_le<int>(file); break;
-                            case PlyPropertyType::UINT32: NZ = read_le<unsigned int>(file); break;
-                            case PlyPropertyType::FLOAT32: NZ = read_le<float>(file); break;
-                            case PlyPropertyType::FLOAT64: NZ = read_le<double>(file); break;
+                            case PlyPropertyType::INT8: NZ = READ_LE<char>(file); break;
+                            case PlyPropertyType::UINT8: NZ = READ_LE<unsigned char>(file); break;
+                            case PlyPropertyType::INT16: NZ = READ_LE<short>(file); break;
+                            case PlyPropertyType::UINT16: NZ = READ_LE<unsigned short>(file); break;
+                            case PlyPropertyType::INT32: NZ = READ_LE<int>(file); break;
+                            case PlyPropertyType::UINT32: NZ = READ_LE<unsigned int>(file); break;
+                            case PlyPropertyType::FLOAT32: NZ = READ_LE<float>(file); break;
+                            case PlyPropertyType::FLOAT64: NZ = READ_LE<double>(file); break;
                         }
                         break;
                     case PROPERTY_ALPHA:
-                        ALPHA = read_le<unsigned char>(file);
+                        ALPHA = READ_LE<unsigned char>(file);
                         break;
                     case PROPERTY_CONFIDENCE:
                         switch (name.type) {
-                            case PlyPropertyType::INT8: CONFIDENCE = read_le<char>(file); break;
-                            case PlyPropertyType::UINT8: CONFIDENCE = read_le<unsigned char>(file); break;
-                            case PlyPropertyType::INT16: CONFIDENCE = read_le<short>(file); break;
-                            case PlyPropertyType::UINT16: CONFIDENCE = read_le<unsigned short>(file); break;
-                            case PlyPropertyType::INT32: CONFIDENCE = read_le<int>(file); break;
-                            case PlyPropertyType::UINT32: CONFIDENCE = read_le<unsigned int>(file); break;
-                            case PlyPropertyType::FLOAT32: CONFIDENCE = read_le<float>(file); break;
-                            case PlyPropertyType::FLOAT64: CONFIDENCE = read_le<double>(file); break;
+                            case PlyPropertyType::INT8: CONFIDENCE = READ_LE<char>(file); break;
+                            case PlyPropertyType::UINT8: CONFIDENCE = READ_LE<unsigned char>(file); break;
+                            case PlyPropertyType::INT16: CONFIDENCE = READ_LE<short>(file); break;
+                            case PlyPropertyType::UINT16: CONFIDENCE = READ_LE<unsigned short>(file); break;
+                            case PlyPropertyType::INT32: CONFIDENCE = READ_LE<int>(file); break;
+                            case PlyPropertyType::UINT32: CONFIDENCE = READ_LE<unsigned int>(file); break;
+                            case PlyPropertyType::FLOAT32: CONFIDENCE = READ_LE<float>(file); break;
+                            case PlyPropertyType::FLOAT64: CONFIDENCE = READ_LE<double>(file); break;
                         }
                         break;
                     case PROPERTY_INTENSITY:
                         switch (name.type) {
-                            case PlyPropertyType::INT8: INTENSITY = read_le<char>(file); break;
-                            case PlyPropertyType::UINT8: INTENSITY = read_le<unsigned char>(file); break;
-                            case PlyPropertyType::INT16: INTENSITY = read_le<short>(file); break;
-                            case PlyPropertyType::UINT16: INTENSITY = read_le<unsigned short>(file); break;
-                            case PlyPropertyType::INT32: INTENSITY = read_le<int>(file); break;
-                            case PlyPropertyType::UINT32: INTENSITY = read_le<unsigned int>(file); break;
-                            case PlyPropertyType::FLOAT32: INTENSITY = read_le<float>(file); break;
-                            case PlyPropertyType::FLOAT64: INTENSITY = read_le<double>(file); break;
+                            case PlyPropertyType::INT8: INTENSITY = READ_LE<char>(file); break;
+                            case PlyPropertyType::UINT8: INTENSITY = READ_LE<unsigned char>(file); break;
+                            case PlyPropertyType::INT16: INTENSITY = READ_LE<short>(file); break;
+                            case PlyPropertyType::UINT16: INTENSITY = READ_LE<unsigned short>(file); break;
+                            case PlyPropertyType::INT32: INTENSITY = READ_LE<int>(file); break;
+                            case PlyPropertyType::UINT32: INTENSITY = READ_LE<unsigned int>(file); break;
+                            case PlyPropertyType::FLOAT32: INTENSITY = READ_LE<float>(file); break;
+                            case PlyPropertyType::FLOAT64: INTENSITY = READ_LE<double>(file); break;
                         }
                         break;
                     default:
@@ -363,7 +379,7 @@ PlyVertex::PlyVertex(vector<VertexName> const& names, fstream& file, PlyFileEnco
     this->set_all_properties(X, Y, Z, R, G, B, NX, NY, NZ, ALPHA, CONFIDENCE, INTENSITY);
 }
 
-PlyVertex::PlyVertex(double const X, double const Y, double const Z, unsigned char const R = 0, unsigned char const G = 0, unsigned char const B = 0)
+PlyVertex::PlyVertex(double X, double Y, double Z, unsigned char R = 0, unsigned char G = 0, unsigned char B = 0)
 {
     this->set_all_properties(X, Y, Z, R, G, B, 0, 0, 0, 255, 1, 0.5);
 }

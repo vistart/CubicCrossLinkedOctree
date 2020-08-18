@@ -13,13 +13,9 @@
 #define __PLY_VERTEX_H__
 
 #include "PlyFileEncoding.h"
-#include "PlyPropertyType.h"
 #include "Point.h"
 #include <vector>
-#include <fstream>
 #include <sstream>
-
-using namespace std;
 
 /*
  This class is used to describe a vertex in ply format.
@@ -60,7 +56,7 @@ public:
      determines the content type of the sub-string.
      @param string const&: A string describing all property values of a vertex.
      */
-    PlyVertex(vector<VertexName> const&, string const&);
+    PlyVertex(std::vector<VertexName> const&, std::string const&);
 
     /*
      Initialize a vertex based on file stream and its encoding.
@@ -82,25 +78,25 @@ public:
        length in turn according to the first parameter (property name list),
        and convert them to the corresponding properties.
 
-     @param vector<VertexName> const&: List of property names. The order of property names
+     @param names List of property names. The order of property names
      determines the content type of the sub-string.
-     @param fstream&: the file from which the property origin.
-     @param PlyFileEncoding::FileEncoding const&: The encoding of the vertex property of this file.
+     @param file the file from which the property origin.
+     @param file_encoding The encoding of the vertex property of this file.
      */
-    PlyVertex(vector<VertexName> const&, fstream&, PlyFileEncoding::FileEncoding const&);
+    PlyVertex(std::vector<VertexName> const& names, std::fstream& file, PlyFileEncoding::FileEncoding const& file_encoding);
 
     /*
      Initialize a vertex based on specified X,Y,Z,R,G,B.
      the ALPHA value is 255, the confidence is 1, and the intensity is 0.5.
 
-     @param double const: X
-     @param double const: Y
-     @param double const: Z
-     @param unsigned char const: R
-     @param unsigned char const: G
-     @param unsigned char const: B
+     @param X
+     @param Y
+     @param Z
+     @param R
+     @param G
+     @param B
      */
-    PlyVertex(double const, double const, double const, unsigned char const, unsigned char const, unsigned char const);
+    PlyVertex(double X, double Y, double Z, unsigned char R, unsigned char G, unsigned char B);
     ~PlyVertex() = default;
     enum PropertyNames { PROPERTY_NONE,
         PROPERTY_X, PROPERTY_Y, PROPERTY_Z,
@@ -112,13 +108,13 @@ public:
      Pass location of vertex to the output stream.
      The output format is: (X, Y, Z)
 
-     @param ostream& stream: The stream of vertex to be output.
-     @param PlyVertex const& vertex: Vertex to output.
-     @return ostream&: The stream that has been passed with the vertex.
+     @param stream The stream of vertex to be output.
+     @param vertex Vertex to output.
+     @return The stream that has been passed with the vertex.
      */
-    friend ostream& operator<<(ostream& stream, PlyVertex const& vertex)
+    friend std::ostream& operator<<(std::ostream& stream, PlyVertex const& vertex)
     {
-        stream << "(" << setprecision(10) << vertex.__X << "," << setprecision(10) << vertex.__Y << "," << setprecision(10) << vertex.__Z << ")";
+        stream << "(" << std::setprecision(10) << vertex.__X << "," << std::setprecision(10) << vertex.__Y << "," << std::setprecision(10) << vertex.__Z << ")";
         return stream;
     }
 };

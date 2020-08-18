@@ -12,18 +12,19 @@
 #endif
 
 #ifdef __PLY_COMMENT_LIST_H__
-bool PlyCommentList::add(string comment)
+using namespace std;
+bool PlyCommentList::add(string const& comment) const
 {
-    this->comments.emplace_back(comment);
+    this->comments->emplace_back(comment);
     return true;
 }
 
-vector<string> PlyCommentList::getComments()
+shared_ptr<vector<string>> PlyCommentList::getComments() const
 {
     return this->comments;
 }
 
-PlyCommentList& PlyCommentList::operator<<(string comment)
+PlyCommentList& PlyCommentList::operator<<(string const& comment)
 {
     if (this->add(comment)) {
 
@@ -31,8 +32,16 @@ PlyCommentList& PlyCommentList::operator<<(string comment)
     return *this;
 }
 
+PlyCommentList::PlyCommentList()
+{
+    /*
+     * Initialize it before using.
+     */
+    this->comments = make_unique<vector<string>>();
+}
+
 PlyCommentList::~PlyCommentList()
 {
-    this->comments.erase(this->comments.begin(), this->comments.end());
+    this->comments = nullptr;
 }
 #endif

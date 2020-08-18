@@ -1,14 +1,18 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.17)
 project(CubicCrossLinkedOctree)
 aux_source_directory(. DIR_SRCS)
-include_directories("${PROJECT_SOURCE_DIR}/file_format/ply")
 include_directories("${PROJECT_SOURCE_DIR}/file_format/PointCloudBasePresentation")
-add_subdirectory(file_format/ply)
+include_directories("${PROJECT_SOURCE_DIR}/file_format/ply")
+include_directories("${PROJECT_SOURCE_DIR}/octree")
 add_subdirectory(file_format/PointCloudBasePresentation)
+add_subdirectory(file_format/ply)
+add_subdirectory(octree)
 
 set(SOURCES main.cpp)
 
 set(CMAKE_CXX_STANDARD 17)
+target_compile_features(PointCloudBasePresentation PUBLIC cxx_std_17)
+target_compile_features(octree PUBLIC cxx_std_17)
 
 add_executable(CubicCrossLinkedOctree ${SOURCES})
 target_link_libraries(CubicCrossLinkedOctree PlyFile)

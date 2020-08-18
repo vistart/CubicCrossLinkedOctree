@@ -15,11 +15,7 @@
 #include "PlyVertex.h"
 #include "PointList.h"
 #include "PlyFileEncoding.h"
-#include "PlyPropertyType.h"
-#include <fstream>
-#include <sstream>
 #include <vector>
-using namespace std;
 
 /*
  This class is used to describe the list containing all the vertices.
@@ -40,26 +36,26 @@ public:
     /*
      Add a vertex to this list.
 
-     @param string const&: the string describing the vertex.
-     @return PlyVertexList&: self.
+     @param str_vertex the string describing the vertex.
+     @return self.
      */
-    PlyVertexList& operator<<(string const&);
+    PlyVertexList& operator<<(std::string const& str_vertex);
 
     /*
      Add a vertex to this list.
 
-     @param fstream&: the file stream containing the vertex.
+     @param file the file stream containing the vertex.
      @return PlyVertexList&: self.
      */
-    PlyVertexList& operator<<(fstream&);
+    PlyVertexList& operator<<(std::fstream& file);
 
     /*
      Add a vertex to this list.
 
-     @param PlyVertex const&: the vertex to be added.
-     @return PlyVertexList&: self.
+     @param vertex the vertex to be added.
+     @return self.
      */
-    PlyVertexList& operator<<(PlyVertex const&);
+    PlyVertexList& operator<<(std::shared_ptr<PlyVertex> const& vertex);
 
     /*
      Specify the current file encoding.
@@ -71,31 +67,31 @@ public:
      @param PlyFileEncoding const&: the target file encoding.
      @return PlyVertexList&: self.
      */
-    PlyVertexList& operator<<(PlyFileEncoding const&);
+    PlyVertexList& operator<<(PlyFileEncoding const& file_encoding);
 
     /*
      Read property names and corresponding types.
 
-     @param fstream&: the target file.
-     @return bool: true if no exceptions occured.
+     @param file the target file.
+     @return true if no exceptions occured.
      */
-    bool read_element_vertex_names(fstream&);
+    bool read_element_vertex_names(std::fstream& file);
 
     /*
      Set the count of vertex according to the value stored in ply file header.
      Note: It is strongly recommended to set it only once before reading the
      vertex properties.
 
-     @param unsigned int const: the target count.
+     @param count the target count.
      */
-    void SetCountInHeader(unsigned int const);
+    void SetCountInHeader(unsigned int count);
 
     /*
      Get the count of vertex.
 
      @return unsigned int const: the target count.
      */
-    unsigned int GetCountInHeader() const;
+    [[nodiscard]] unsigned int GetCountInHeader() const;
 
     /*
      Names of all properties.
@@ -104,18 +100,18 @@ public:
      specify the property names once before reading the property value, and it is strongly not
      recommended to change thereafter.
      */
-    vector<PlyVertex::VertexName> names;
+    std::vector<PlyVertex::VertexName> names;
 
     /*
      Return the pointer pointing to all vertices stored in this instance.
 
-     @return shared_ptr<vector<PlyVertex>>: the shared pointer to all vertices.
+     @return the shared pointer to all vertices.
      */
-    shared_ptr<vector<PlyVertex>> GetPoints() override;
+    std::shared_ptr<std::vector<std::shared_ptr<PlyVertex>>> GetPoints() override;
 protected:
     unsigned int count_in_header = 0;
     PlyFileEncoding::FileEncoding file_encoding = { PlyFileEncoding::FILE_ENCODING_ASCII, 1.0 };
-    shared_ptr<vector<PlyVertex>> points;
+    std::shared_ptr<std::vector<std::shared_ptr<PlyVertex>>> points;
 };
 
 #endif
