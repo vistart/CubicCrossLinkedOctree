@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.13)
 project(CubicCrossLinkedOctree)
 aux_source_directory(. DIR_SRCS)
 include_directories("${PROJECT_SOURCE_DIR}/file_format/PointCloudBasePresentation")
