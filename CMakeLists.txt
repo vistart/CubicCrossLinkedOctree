@@ -5,6 +5,9 @@ include_directories("${PROJECT_SOURCE_DIR}/file_format/PointCloudBasePresentatio
 include_directories("${PROJECT_SOURCE_DIR}/file_format/ply")
 include_directories("${PROJECT_SOURCE_DIR}/octree")
 
+set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/third-party/vcpkg/scripts/buildsystems/vcpkg.cmake
+        CACHE STRING "Vcpkg toolchain file")
+
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "RelWithDebInfo")
     message(
