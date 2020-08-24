@@ -12,11 +12,10 @@ Clone repository from GitHub:
 git clone --recurse https://github.com/vistart/CubicCrossLinkedOctree
 ```
 
-Switch to the `third-party/vcpkg` directory and switch to the latest tag. The latest tag is `2020.06`:
+Switch to the `third-party/vcpkg` directory:
 
 ```
 cd CubicCrossLinkedOctree/third-party/vcpkg
-git checkout 2020.06
 ```
 
 Bootstrap the [vcpkg](https://github.com/microsoft/vcpkg)
