@@ -12,16 +12,23 @@ Clone repository from GitHub:
 git clone --recurse https://github.com/vistart/CubicCrossLinkedOctree
 ```
 
+Switch to the `third-party/vcpkg` directory and switch to the latest tag. The latest tag is `2020.06`:
+
+```
+cd CubicCrossLinkedOctree/third-party/vcpkg
+git checkout 2020.06
+```
+
 Bootstrap the [vcpkg](https://github.com/microsoft/vcpkg)
 
 ```
-CubicCrossLinkedOctree/third-party/vcpkg/bootstrap-vcpkg.sh
+./bootstrap-vcpkg.sh
 ```
 
 The above command will download `cmake` and `ninja-build`, regardless of whether they exist in the system. If you want to use the `cmake` and `ninja-build` installed in the system, please append the `-useSystemBinaries` parameter, as follows:
 
 ```
-CubicCrossLinkedOctree/third-party/vcpkg/bootstrap-vcpkg.sh -useSystemBinary
+./bootstrap-vcpkg.sh -useSystemBinary
 ```
 
 > Note: You need to make sure that `gcc`, `g++`, `gdb`, `build-essential`, `cmake`, `ninja-build` are available in the system. If not, you can install it with the following command:
