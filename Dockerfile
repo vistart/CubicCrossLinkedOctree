@@ -10,7 +10,6 @@ RUN git clone --recurse https://github.com/vistart/CubicCrossLinkedOctree
 WORKDIR /root/CubicCrossLinkedOctree/third-party/vcpkg
 
 RUN ./bootstrap-vcpkg.sh -useSystemBinaries
-COPY cmake-3.17.2-Linux-x86_64.tar.gz /root/CubicCrossLinkedOctree/third-party/vcpkg/downloads
 RUN ./vcpkg install boost-asio boost-thread
 
 WORKDIR /root
