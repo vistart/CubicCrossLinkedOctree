@@ -95,8 +95,36 @@ VCPKG community triplets:
 
 ### Windows
 
+> Note: It is highly recommended to use [PowerShell](https://github.com/powershell/powershell).
+
+Clone repository from GitHub:
+
+> We need to recursively clone the repos, as we refer to other code repositories as submodules.
+
 ```
 git clone --recurse https://github.com/vistart/CubicCrossLinkedOctree
-CubicCrossLinkedOctree\third-party\vcpkg\bootstrap-vcpkg.bat
-CubicCrossLinkedOctree\third-party\vcpkg\vcpkg install boost-asio boost-thread
+```
+
+Switch to the `third-party/vcpkg` directory:
+
+```
+cd CubicCrossLinkedOctree/third-party/vcpkg
+```
+
+Bootstrap the [vcpkg](https://github.com/microsoft/vcpkg)
+
+```
+./bootstrap-vcpkg.bat
+```
+
+Then execute the installation command, as follows:
+
+```
+.\vcpkg install boost-asio boost-threa
+```
+
+> Note: The x86 code package is downloaded by default, regardless of whether you have an x86 or x86_64 architecture. If you want to use the x86_64 code package, please append `x64-windows` to the package name, as shown below:
+
+```
+.\vcpkg install boost-asio:x64-windows boost-thread:x64-windows
 ```
