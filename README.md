@@ -120,7 +120,7 @@ Bootstrap the [vcpkg](https://github.com/microsoft/vcpkg)
 Then execute the installation command, as follows:
 
 ```
-.\vcpkg install boost-asio boost-threa
+.\vcpkg install boost-asio boost-thread
 ```
 
 > Note: The x86 code package is downloaded by default, regardless of whether you have an x86 or x86_64 architecture. If you want to use the x86_64 code package, please append `x64-windows` to the package name, as shown below:
