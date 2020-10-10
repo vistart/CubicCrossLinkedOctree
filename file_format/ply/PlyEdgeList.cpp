@@ -12,8 +12,99 @@
 #endif
 
 #ifdef __PLY_EDGE_LIST_H__
-void PlyEdgeList::demo()
+using namespace std;
+PlyEdgeList::PlyEdgeList()
 {
-	std::cout << "demo" << std::endl;
+    this->edges = make_shared<vector<shared_ptr<PlyEdge>>>();
+}
+PlyEdgeList::~PlyEdgeList()
+{
+    this->edges = nullptr;
+}
+PlyEdgeList& PlyEdgeList::operator<<(std::string const& str_edge)
+{
+    auto edge = std::make_shared<PlyEdge>(names, str_edge);
+    this->edges->emplace_back(edge);
+    return *this;
+}
+PlyEdgeList& PlyEdgeList::operator<<(std::fstream& file)
+{
+    auto edge = std::make_shared<PlyEdge>(names, file, file_encoding);
+    this->edges->emplace_back(edge);
+    return *this;
+}
+PlyEdgeList& PlyEdgeList::operator<<(std::shared_ptr<PlyEdge> const& edge)
+{
+    this->edges->emplace_back(edge);
+    return *this;
+}
+PlyEdgeList& PlyEdgeList::operator<<(PlyFileEncoding const& fe)
+{
+    this->file_encoding = fe.GetDefinition();
+    return *this;
+}
+bool PlyEdgeList::read_element_edge_names(std::fstream& f)
+{
+    string type;
+    string name;
+    f >> type >> name;
+    PlyEdge::EdgeName edge_name = { PlyEdge::PROPERTY_NONE, PlyPropertyType::NOTYPE };
+
+    if (name == "vertex1")
+    {
+        edge_name.name = PlyEdge::PROPERTY_VERTEX1;
+    } else if (name == "vertex2")
+    {
+        edge_name.name = PlyEdge::PROPERTY_VERTEX2;
+    } else if (name == "red" || name == "r")
+    {
+        edge_name.name = PlyEdge::PROPERTY_RED;
+    } else if (name == "green" || name == "g")
+    {
+        edge_name.name = PlyEdge::PROPERTY_GREEN;
+    } else if (name == "blue" || name == "b")
+    {
+        edge_name.name = PlyEdge::PROPERTY_BLUE;
+    }
+
+    if (type == "int8" || type == "char") {
+        edge_name.type = PlyPropertyType::INT8;
+    }
+    else if (type == "uint8" || type == "uchar") {
+        edge_name.type = PlyPropertyType::UINT8;
+    }
+    else if (type == "int16" || type == "short") {
+        edge_name.type = PlyPropertyType::INT16;
+    }
+    else if (type == "uint16" || type == "ushort") {
+        edge_name.type = PlyPropertyType::UINT16;
+    }
+    else if (type == "int32" || type == "int") {
+        edge_name.type = PlyPropertyType::INT32;
+    }
+    else if (type == "uint32" || type == "uint") {
+        edge_name.type = PlyPropertyType::UINT32;
+    }
+    else if (type == "float32" || type == "float") {
+        edge_name.type = PlyPropertyType::FLOAT32;
+    }
+    else if (type == "float64" || type == "double") {
+        edge_name.type = PlyPropertyType::FLOAT64;
+    }
+
+    this->names.emplace_back(edge_name);
+    return true;
+}
+void PlyEdgeList::SetCountInHeader(unsigned int count)
+{
+    this->count_in_header = count;
+}
+unsigned int PlyEdgeList::GetCountInHeader() const
+{
+    return this->count_in_header;
+}
+std::shared_ptr<std::vector<std::shared_ptr<PlyEdge>>> PlyEdgeList::GetEdges() const
+{
+    return this->edges;
 }
 #endif
