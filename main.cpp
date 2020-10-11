@@ -1,6 +1,14 @@
-
+/*
+ *  _   __ __ _____ _____ ___  ____  _____
+ * | | / // // ___//_  _//   ||  __||_   _|
+ * | |/ // /(__  )  / / / /| || |     | |
+ * |___//_//____/  /_/ /_/ |_||_|     |_|
+ * @link https://vistart.me/
+ * @copyright Copyright (c) 2019 - 2020 vistart
+ * @license https://vistart.me/license/
+*/
 #include "PlyFile.h"
-#include "CubicCrossLinkedOctree.h"
+#include "Octree.h"
 #include <iostream>
 #include <sstream>
 #include <memory>
@@ -33,7 +41,7 @@ int main(int argc, char* argv[])
     cout << "The last point is: " << *point_list->GetPoints()->back() << endl;
 
     cout << "Construct the Octree of Point Cloud: " << endl;
-    CubicCrossLinkedOctree<PlyVertexList, PlyVertex, PlyFile> octree(point_list, depth);
+    Octree<PlyVertexList, PlyVertex, PlyFile> octree(point_list, depth);
     //cout << "Hello World!\n";
     return 0;
 }

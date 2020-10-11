@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.5)
 set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/third-party/vcpkg/scripts/buildsystems/vcpkg.cmake)
 project(CubicCrossLinkedOctree)
 aux_source_directory(. DIR_SRCS)
@@ -33,9 +33,10 @@ set(SOURCES main.cpp)
 
 set(CMAKE_CXX_STANDARD 17)
 target_compile_features(PointCloudBasePresentation PUBLIC cxx_std_17)
+target_compile_features(PlyFile PUBLIC cxx_std_17)
 target_compile_features(octree PUBLIC cxx_std_17)
 
 add_executable(CubicCrossLinkedOctree ${SOURCES})
-target_link_libraries(CubicCrossLinkedOctree PointCloudBasePresentation)
-target_link_libraries(CubicCrossLinkedOctree PlyFile)
 target_link_libraries(CubicCrossLinkedOctree octree)
+target_link_libraries(CubicCrossLinkedOctree PlyFile)
+target_link_libraries(CubicCrossLinkedOctree PointCloudBasePresentation)
